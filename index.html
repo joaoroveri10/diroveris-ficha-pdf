@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ficha Técnica - Di Roveri's</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Montserrat&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: #D4AF37;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #D4AF37;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ficha Técnica - Di Roveri's</h1>
+  <form id="fichaForm">
+    <label>Nome do cliente</label><input type="text" name="nome cliente" required />
+    <label>Número de telefone</label><input type="text" name="número de telefone" />
+    <label>Data do pedido</label><input type="date" name="data pedido" required />
+    <label>Previsão de entrega</label><input type="date" name="previsão entrega" required />
+
+    <div class="grid">
+      <label>Tórax <input type="text" name="torax" /></label>
+      <label>Pala <input type="text" name="pala" /></label>
+      <label>Manga <input type="text" name="manga" /></label>
+      <label>Antebraço <input type="text" name="antebraço" /></label>
+      <label>Bíceps <input type="text" name="biceps" /></label>
+      <label>Punho Direito <input type="text" name="punho direito" /></label>
+      <label>Punho Esquerdo <input type="text" name="punho esquerdo" /></label>
+      <label>Cintura <input type="text" name="cintura" /></label>
+      <label>Quadril <input type="text" name="quadril" /></label>
+      <label>Comprimento Total <input type="text" name="comprimento total" /></label>
+      <label>Colarinho <input type="text" name="colarinho" /></label>
+      <label>Frente <input type="text" name="frente" /></label>
+      <label>Punhos <input type="text" name="punhos" /></label>
+    </div>
+
+    <label>Monograma</label><input type="text" name="monograma" />
+    <label>Botões</label><input type="text" name="botões" />
+    <label>Tecido</label><input type="text" name="tecido" />
+    <label>Ref</label><input type="text" name="ref" />
+    <label>Quantidade</label><input type="text" name="quantidade" />
+    <label>Fornecedor</label><input type="text" name="fornecedor" />
+    <label>Pedido</label><input type="text" name="pedido" />
+    <label>Observações</label><textarea name="observações"></textarea>
+
+    <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+  </form>
+
+  <script>
+    async function gerarPDF() {
+      const form = document.getElementById('fichaForm');
+      const data = new FormData(form);
+      const entries = Object.fromEntries(data.entries());
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text("Ficha Técnica - Di Roveri's", 70, 20);
+      doc.setFontSize(11);
+
+      let y = 30;
+      for (const [campo, valor] of Object.entries(entries)) {
+        doc.text(`${campo.toUpperCase()}: ${valor}`, 15, y);
+        y += 7;
+        if (y > 280) {
+          doc.addPage();
+          y = 20;
+        }
+      }
+
+      doc.save(`Ficha_DiRoveris_${entries["nome cliente"] || 'cliente'}.pdf`);
+    }
+  </script>
+</body>
+</html>
+
 
