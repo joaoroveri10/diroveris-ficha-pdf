@@ -82,44 +82,417 @@
     </div>
 
     <label>Monograma</label><input type="text" name="monograma" />
-    <label>Botões</label><input type="text" name="botões" />
-    <label>Tecido</label><input type="text" name="tecido" />
-    <label>Ref</label><input type="text" name="ref" />
-    <label>Quantidade</label><input type="text" name="quantidade" />
-    <label>Fornecedor</label><input type="text" name="fornecedor" />
-    <label>Pedido</label><input type="text" name="pedido" />
-    <label>Observações</label><textarea name="observações"></textarea>
+    <label>Botões</label><input type="text" name="botões" /><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Di Roveri’s – Fichas Sob Medida</title>
 
-    <button type="button" onclick="gerarPDF()">Gerar PDF</button>
-  </form>
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root { --gold:#D4AF37; --dark:#333333; --muted:#f5f5f5; --line:#e8e8e8; }
+    *{ box-sizing:border-box }
+    body{
+      margin:0; padding:28px 16px; background:linear-gradient(180deg,#fafafa 0%,#f5f5f5 100%);
+      font-family:'Montserrat',sans-serif; color:var(--dark);
+    }
+    .container{ max-width:1000px; margin:0 auto; }
+    header.hero{ text-align:center; margin-bottom:16px; }
+    .brand{ font-family:'Cinzel',serif; font-size:clamp(28px,4vw,40px); color:var(--gold); margin:0 0 4px; }
+    .subtitle{ margin:0; opacity:.8; font-weight:600; }
+
+    /* Tabs */
+    .tabs{ margin:18px auto 8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+    .tab-btn{
+      border:1px solid var(--line); background:#fff; padding:10px 16px; border-radius:10px;
+      cursor:pointer; font-weight:700; letter-spacing:.3px;
+    }
+    .tab-btn.active{ background:var(--gold); color:#fff; border-color:var(--gold); }
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
+
+    /* Cards + layout */
+    .card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; margin:12px 0;
+      box-shadow:0 6px 16px rgba(0,0,0,.05); }
+    .card h2{
+      font-family:'Cinzel',serif; font-size:18px; margin:0 0 12px; display:inline-flex; gap:8px; align-items:center;
+    }
+    .card h2::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--gold); display:inline-block; }
+
+    label{ font-weight:600; font-size:13px; display:block; }
+    input, textarea, select{
+      width:100%; padding:10px 12px; margin-top:6px; margin-bottom:10px; border:1px solid var(--line);
+      border-radius:10px; outline:none; background:#fff;
+    }
+    input:focus,textarea:focus,select:focus{ border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,175,55,.15); }
+
+    .grid-2{ display:grid; gap:12px; grid-template-columns:repeat(2,1fr); }
+    .grid-3{ display:grid; gap:12px; grid-template-columns:repeat(3,1fr); }
+    .grid-4{ display:grid; gap:12px; grid-template-columns:repeat(4,1fr); }
+    @media (max-width:900px){ .grid-2,.grid-3,.grid-4{ grid-template-columns:1fr; } }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button.primary{ background:var(--gold); color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:700; cursor:pointer; }
+    button.secondary{ background:#fff; color:var(--dark); border:1px solid var(--line); padding:12px 18px; border-radius:10px; font-weight:700; cursor:pointer; }
+
+    .tip{ font-size:12px; opacity:.7; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <h1 class="brand">Di Roveri’s</h1>
+      <p class="subtitle">Fichas Técnicas Sob Medida</p>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="camisa">Camisa sob medida</button>
+      <button class="tab-btn" data-tab="terno">Terno sob medida</button>
+    </nav>
+
+    <!-- ==== ABA CAMISA ==== -->
+    <section id="tab-camisa" class="tab-panel active">
+      <form id="formCamisa">
+        <!-- Cliente -->
+        <div class="card">
+          <h2>Dados do Cliente</h2>
+          <div class="grid-2">
+            <div>
+              <label>Nome do cliente</label>
+              <input type="text" name="nome cliente" required />
+            </div>
+            <div>
+              <label>Número de telefone</label>
+              <input type="text" name="número de telefone" />
+            </div>
+            <div>
+              <label>Data do pedido</label>
+              <input type="date" name="data pedido" required />
+            </div>
+            <div>
+              <label>Previsão de entrega</label>
+              <input type="date" name="previsão entrega" required />
+            </div>
+            <div>
+              <label>Modelagem</label>
+              <input type="text" name="modelagem" placeholder="Slim, Tradicional, etc." />
+            </div>
+          </div>
+        </div>
+
+        <!-- Medidas -->
+        <div class="card">
+          <h2>Medidas (cm)</h2>
+          <div class="grid-4">
+            <div><label>Tórax</label><input type="text" name="torax" /></div>
+            <div><label>Pala</label><input type="text" name="pala" /></div>
+            <div><label>Manga</label><input type="text" name="manga" /></div>
+            <div><label>Antebraço</label><input type="text" name="antebraço" /></div>
+
+            <div><label>Bíceps</label><input type="text" name="biceps" /></div>
+            <div><label>Punho direito</label><input type="text" name="punho direito" /></div>
+            <div><label>Punho esquerdo</label><input type="text" name="punho esquerdo" /></div>
+            <div><label>Cintura</label><input type="text" name="cintura" /></div>
+
+            <div><label>Quadril</label><input type="text" name="quadril" /></div>
+            <div><label>Comprimento total</label><input type="text" name="comprimento total" /></div>
+            <div><label>Colarinho</label><input type="text" name="colarinho" /></div>
+            <div><label>Ombro</label><input type="text" name="ombro" /></div>
+          </div>
+        </div>
+
+        <!-- Especificações -->
+        <div class="card">
+          <h2>Especificações</h2>
+          <div class="grid-3">
+            <div><label>Tipo de colarinho</label><input type="text" name="tipo de colarinho" placeholder="Italiano, Francês, Button-down..." /></div>
+            <div><label>Tipo de punho</label><input type="text" name="tipo de punho" placeholder="Reto, Arredondado, Duplo..." /></div>
+            <div><label>Frente</label><input type="text" name="frente" placeholder="Tradicional, Esportiva..." /></div>
+            <div><label>Monograma</label><input type="text" name="monograma" placeholder="Opcional" /></div>
+            <div><label>Tecido</label><input type="text" name="tecido" /></div>
+            <div><label>Ref</label><input type="text" name="ref" /></div>
+            <div><label>Quantidade</label><input type="text" name="quantidade" /></div>
+            <div><label>Fornecedor</label><input type="text" name="fornecedor" /></div>
+            <div><label>Pedido</label><input type="text" name="pedido" /></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Observações</h2>
+          <textarea name="observações" rows="5" placeholder="Observações gerais do pedido..."></textarea>
+          <p class="tip">Dica: descreva preferências de caimento, detalhes do monograma, reforços, etc.</p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="primary" id="btnPDFCamisa">Gerar PDF (camisa)</button>
+          <button type="reset" class="secondary">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ==== ABA TERNO ==== -->
+    <section id="tab-terno" class="tab-panel">
+      <form id="formTerno">
+        <!-- Cliente / Datas -->
+        <div class="card">
+          <h2>Dados do Cliente</h2>
+          <div class="grid-2">
+            <div><label>Nome do cliente</label><input type="text" name="nome cliente" required></div>
+            <div><label>Número de telefone</label><input type="text" name="número de telefone"></div>
+            <div><label>Data do pedido</label><input type="date" name="data pedido" required></div>
+            <div><label>Data da primeira prova</label><input type="date" name="data primeira prova" required></div>
+            <div><label>Data de entrega final</label><input type="date" name="data entrega final" required></div>
+          </div>
+        </div>
+
+        <!-- Medidas Paletó -->
+        <div class="card">
+          <h2>Medidas – Paletó (cm)</h2>
+          <div class="grid-4">
+            <div><label>Tórax</label><input type="text" name="torax_p" /></div>
+            <div><label>Colarinho</label><input type="text" name="colarinho_p" /></div>
+            <div><label>Ombro</label><input type="text" name="ombro_p" /></div>
+            <div><label>Cintura</label><input type="text" name="cintura_p" /></div>
+
+            <div><label>Quadril</label><input type="text" name="quadril_p" /></div>
+            <div><label>Comprimento total</label><input type="text" name="comprimento_p" /></div>
+            <div><label>Comprimento manga</label><input type="text" name="manga_p" /></div>
+            <div><label>Bíceps</label><input type="text" name="biceps_p" /></div>
+
+            <div><label>Antebraço</label><input type="text" name="antebraco_p" /></div>
+            <div><label>Punho</label><input type="text" name="punho_p" /></div>
+          </div>
+        </div>
+
+        <!-- Medidas Calça -->
+        <div class="card">
+          <h2>Medidas – Calça (cm)</h2>
+          <div class="grid-4">
+            <div><label>Cintura</label><input type="text" name="cintura_c" /></div>
+            <div><label>Quadril</label><input type="text" name="quadril_c" /></div>
+            <div><label>Cavalo total</label><input type="text" name="cavalo_c" /></div>
+            <div><label>Comprimento lateral</label><input type="text" name="lateral_c" /></div>
+
+            <div><label>Coxa</label><input type="text" name="coxa_c" /></div>
+            <div><label>Joelho</label><input type="text" name="joelho_c" /></div>
+            <div><label>Panturrilha</label><input type="text" name="panturrilha_c" /></div>
+            <div><label>Boca</label><input type="text" name="boca_c" /></div>
+          </div>
+        </div>
+
+        <!-- Informações do Terno -->
+        <div class="card">
+          <h2>Informações do Terno</h2>
+          <div class="grid-3">
+            <div>
+              <label>Item</label>
+              <select name="tipo_item">
+                <option value="Terno completo">Terno completo</option>
+                <option value="Somente costume (paletó+calça)">Somente costume (paletó + calça)</option>
+                <option value="Somente blazer">Somente blazer</option>
+                <option value="Somente calça">Somente calça</option>
+              </select>
+            </div>
+            <div><label>Metragem de tecido</label><input type="text" name="metragem_tecido" placeholder="Ex.: 3,20 m" /></div>
+            <div><label>Metragem de forro</label><input type="text" name="metragem_forro" placeholder="Ex.: 2,20 m" /></div>
+            <div><label>Modelagem</label><input type="text" name="modelagem_t" placeholder="Slim, Tradicional, etc." /></div>
+            <div><label>Tipo de lapela</label><input type="text" name="lapela_t" placeholder="Notch, Peak, Shawl..." /></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Outras observações</h2>
+          <textarea name="observações_t" rows="5" placeholder="Detalhes de botões, bolsos, forro, ajustes, etc."></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="primary" id="btnPDFTerno">Gerar PDF (terno)</button>
+          <button type="reset" class="secondary">Limpar</button>
+        </div>
+      </form>
+    </section>
+  </div>
 
   <script>
-    async function gerarPDF() {
-      const form = document.getElementById('fichaForm');
-      const data = new FormData(form);
-      const entries = Object.fromEntries(data.entries());
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    // ===== Tabs =====
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const panels = {
+      camisa: document.getElementById('tab-camisa'),
+      terno: document.getElementById('tab-terno')
+    };
+    tabButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        tabButtons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        Object.values(panels).forEach(p=>p.classList.remove('active'));
+        panels[tab].classList.add('active');
+        window.scrollTo({ top:0, behavior:'smooth' });
+      });
+    });
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.text("Ficha Técnica - Di Roveri's", 70, 20);
-      doc.setFontSize(11);
-
-      let y = 30;
-      for (const [campo, valor] of Object.entries(entries)) {
-        doc.text(`${campo.toUpperCase()}: ${valor}`, 15, y);
-        y += 7;
-        if (y > 280) {
-          doc.addPage();
-          y = 20;
-        }
-      }
-
-      doc.save(`Ficha_DiRoveris_${entries["nome cliente"] || 'cliente'}.pdf`);
+    // ===== Utilidades PDF =====
+    function drawSection(doc, x, y, w, h, title) {
+      doc.setDrawColor(220); doc.setLineWidth(0.5); doc.roundedRect(x, y, w, h, 3, 3);
+      doc.setFillColor(212,175,55); doc.roundedRect(x, y, w, 10, 3, 3, 'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text(title, x+4, y+7);
+      doc.setTextColor(30,30,30); doc.setFont('helvetica','normal'); doc.setFontSize(10);
     }
+    function kv(doc, key, value, x, y) {
+      doc.setFont('helvetica','bold'); doc.text(String(key), x, y);
+      doc.setFont('helvetica','normal'); doc.text(String(value || ''), x+42, y);
+    }
+    function headerDoc(doc, titulo){
+      doc.setFont('helvetica','bold'); doc.setTextColor(212,175,55); doc.setFontSize(22); doc.text("Di Roveri’s", 14, 18);
+      doc.setTextColor(40); doc.setFontSize(14); doc.text(titulo, 14, 26);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      const now = new Date(); const dataGeracao = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+      doc.text(`Gerado em ${dataGeracao}`, 200, 12, { align:'right' });
+    }
+    const { jsPDF } = window.jspdf;
+
+    // ===== PDF Camisa =====
+    document.getElementById('btnPDFCamisa').addEventListener('click', ()=>{
+      const form = document.getElementById('formCamisa'); if (!form.reportValidity()) return;
+      const data = new FormData(form); const d = k => (data.get(k)||'').toString();
+      const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+
+      headerDoc(doc, "Ficha Técnica – Camisa Sob Medida");
+      let y = 34;
+
+      // Cliente
+      drawSection(doc, 12, y, 186, 38, "Dados do Cliente"); let ly = y+16;
+      kv(doc, "Cliente", d("nome cliente"), 16, ly);   ly+=6;
+      kv(doc, "Telefone", d("número de telefone"), 16, ly); ly+=6;
+      kv(doc, "Data do pedido", d("data pedido"), 16, ly); ly+=6;
+      kv(doc, "Previsão de entrega", d("previsão entrega"), 16, ly); ly+=6;
+      kv(doc, "Modelagem", d("modelagem"), 110, y+16);
+      y += 38 + 6;
+
+      // Especificações
+      drawSection(doc, 12, y, 186, 38, "Especificações");
+      kv(doc, "Tipo de colarinho", d("tipo de colarinho"), 16, y+16);
+      kv(doc, "Tipo de punho", d("tipo de punho"), 16, y+22);
+      kv(doc, "Frente", d("frente"), 16, y+28);
+      kv(doc, "Tecido", d("tecido"), 110, y+16);
+      kv(doc, "Ref", d("ref"), 110, y+22);
+      kv(doc, "Quantidade", d("quantidade"), 110, y+28);
+      kv(doc, "Fornecedor", d("fornecedor"), 110, y+34);
+      y += 38 + 6;
+
+      // Medidas
+      drawSection(doc, 12, y, 186, 68, "Medidas (cm)");
+      const fields = [
+        ["Tórax", d("torax")], ["Pala", d("pala")], ["Manga", d("manga")],
+        ["Antebraço", d("antebraço")], ["Bíceps", d("biceps")], ["Cintura", d("cintura")],
+        ["Quadril", d("quadril")], ["Comprimento", d("comprimento total")], ["Colarinho", d("colarinho")],
+        ["Ombro", d("ombro")], ["Punho direito", d("punho direito")], ["Punho esquerdo", d("punho esquerdo")]
+      ];
+      let gx=16, gy=y+16, col=0, rowH=8, colW=60;
+      doc.setFont('helvetica','bold');
+      for(let i=0;i<fields.length;i++){
+        const [k,v]=fields[i];
+        doc.text(k+":", gx+(col*colW), gy);
+        doc.setFont('helvetica','normal'); doc.text(String(v||''), gx+26+(col*colW), gy);
+        doc.setFont('helvetica','bold'); col++; if(col===3){ col=0; gy+=rowH; }
+      }
+      y += 68 + 6;
+
+      // Observações
+      const obs = d("observações");
+      const obsH = Math.min(36, Math.max(20, 10 + (obs.length/90)*6));
+      drawSection(doc, 12, y, 186, obs ? obsH : 20, "Observações");
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(obs || "—", 16, y+16, { maxWidth:178 });
+
+      // Rodapé
+      doc.setFontSize(8); doc.setTextColor(120);
+      doc.text("Di Roveri’s — Ficha técnica (camisa) gerada automaticamente", 200, 290, { align:'right' });
+
+      const nome = d("nome cliente") || 'cliente';
+      doc.save(`Ficha_DiRoveris_Camisa_${nome}.pdf`);
+    });
+
+    // ===== PDF Terno =====
+    document.getElementById('btnPDFTerno').addEventListener('click', ()=>{
+      const form = document.getElementById('formTerno'); if (!form.reportValidity()) return;
+      const data = new FormData(form); const d = k => (data.get(k)||'').toString();
+      const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+
+      headerDoc(doc, "Ficha Técnica – Terno Sob Medida");
+      let y = 34;
+
+      // Cliente / Datas
+      drawSection(doc, 12, y, 186, 44, "Dados do Cliente");
+      kv(doc, "Cliente", d("nome cliente"), 16, y+16);
+      kv(doc, "Telefone", d("número de telefone"), 16, y+22);
+      kv(doc, "Data do pedido", d("data pedido"), 16, y+28);
+      kv(doc, "1ª prova", d("data primeira prova"), 110, y+16);
+      kv(doc, "Entrega final", d("data entrega final"), 110, y+22);
+      y += 44 + 6;
+
+      // Paletó
+      drawSection(doc, 12, y, 186, 58, "Medidas – Paletó (cm)");
+      const palFields = [
+        ["Tórax", d("torax_p")], ["Colarinho", d("colarinho_p")], ["Ombro", d("ombro_p")],
+        ["Cintura", d("cintura_p")], ["Quadril", d("quadril_p")], ["Comp. total", d("comprimento_p")],
+        ["Comp. manga", d("manga_p")], ["Bíceps", d("biceps_p")], ["Antebraço", d("antebraco_p")], ["Punho", d("punho_p")]
+      ];
+      let gx=16, gy=y+16, col=0, rowH=8, colW=60;
+      doc.setFont('helvetica','bold');
+      for (let i=0;i<palFields.length;i++){
+        const [k,v]=palFields[i];
+        doc.text(k+":", gx+(col*colW), gy);
+        doc.setFont('helvetica','normal'); doc.text(String(v||''), gx+28+(col*colW), gy);
+        doc.setFont('helvetica','bold'); col++; if(col===3){ col=0; gy+=rowH; }
+      }
+      y += 58 + 6;
+
+      // Calça
+      drawSection(doc, 12, y, 186, 50, "Medidas – Calça (cm)");
+      const calFields = [
+        ["Cintura", d("cintura_c")], ["Quadril", d("quadril_c")], ["Cavalo total", d("cavalo_c")], ["Comp. lateral", d("lateral_c")],
+        ["Coxa", d("coxa_c")], ["Joelho", d("joelho_c")], ["Panturrilha", d("panturrilha_c")], ["Boca", d("boca_c")]
+      ];
+      gx=16; gy=y+16; col=0; rowH=8; colW=60;
+      doc.setFont('helvetica','bold');
+      for (let i=0;i<calFields.length;i++){
+        const [k,v]=calFields[i];
+        doc.text(k+":", gx+(col*colW), gy);
+        doc.setFont('helvetica','normal'); doc.text(String(v||''), gx+32+(col*colW), gy);
+        doc.setFont('helvetica','bold'); col++; if(col===3){ col=0; gy+=rowH; }
+      }
+      y += 50 + 6;
+
+      // Informações do terno
+      drawSection(doc, 12, y, 186, 38, "Informações do Terno");
+      kv(doc, "Item", d("tipo_item"), 16, y+16);
+      kv(doc, "Metragem de tecido", d("metragem_tecido"), 16, y+22);
+      kv(doc, "Metragem de forro", d("metragem_forro"), 16, y+28);
+      kv(doc, "Modelagem", d("modelagem_t"), 110, y+16);
+      kv(doc, "Tipo de lapela", d("lapela_t"), 110, y+22);
+      y += 38 + 6;
+
+      // Observações
+      const obs = d("observações_t");
+      const obsH = Math.min(36, Math.max(20, 10 + (obs.length/90)*6));
+      drawSection(doc, 12, y, 186, obs ? obsH : 20, "Outras observações");
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(obs || "—", 16, y+16, { maxWidth:178 });
+
+      // Rodapé
+      doc.setFontSize(8); doc.setTextColor(120);
+      doc.text("Di Roveri’s — Ficha técnica (terno) gerada automaticamente", 200, 290, { align:'right' });
+
+      const nome = d("nome cliente") || 'cliente';
+      doc.save(`Ficha_DiRoveris_Terno_${nome}.pdf`);
+    });
   </script>
 </body>
 </html>
-
-
